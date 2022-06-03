@@ -1,0 +1,5 @@
+export const BOARD = {
+	NAME: 'BOARD',
+	SET_BOARD: 'SET_BOARD',
+	MAKE_MOVE: 'MAKE_MOVE',
+}

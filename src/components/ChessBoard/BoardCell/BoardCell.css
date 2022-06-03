@@ -1,0 +1,32 @@
+.board-cell {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  border: none;
+  color: rgb(238 238 210);
+}
+
+.board-cell.pair {
+  background-color: rgb(238 238 210);
+  color: rgb(118 150 86);
+}
+
+.board-cell.odd {
+  background-color: rgb(118 150 86);
+}
+
+.board-cell .cell-indicator {
+  font-size: .8em;
+  position: absolute;
+  margin: 3px;
+}
+
+.board-cell .cell-indicator.letter {
+  bottom: 0;
+  right: 0;
+}
+
+.board-cell .cell-indicator.number {
+  top: 0;
+  left: 0;
+}
