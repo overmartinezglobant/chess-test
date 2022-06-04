@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { connect, useDispatch } from 'react-redux'
 import BoardCell from './BoardCell/BoardCell'
-import FlipBoardButton from './FlipBoardButton/FlipBoardButton'
 import './ChessBoard.css'
-import { makeMovement, switchNextPlayer } from '../../../redux/reducers/board'
+import { addMovementToHistory, makeMovement, switchNextPlayer } from '../../../redux/reducers/board'
 
 const ChessBoard = ({ board, isFlipped, nextPlayer }) => {
 	const [boardState, setBoardState] = useState([])
@@ -31,14 +30,28 @@ const ChessBoard = ({ board, isFlipped, nextPlayer }) => {
 			return
 		}
 
+		let movement = fromCell.piece
+
+		movement += toCell.piece ? 'x' : ''
+		movement += `${toCell.x}${toCell.y}`
+
 		dispatch(makeMovement({ from, to, isFlipped }))
 		dispatch(switchNextPlayer())
+		dispatch(addMovementToHistory({
+			move: movement,
+			team: fromCell.team,
+		}))
 	}
 
 	const handleClick = (cell, row, col) => {
 		if (selected && selected.row === row && selected.col === col) {
 			setSelected(null)
 		} else if (selected && (selected.row !== row || selected.col !== col)) {
+			if (selected.cell.team === cell.team) {
+				setSelected({ row, col, cell })
+				return
+			}
+
 			handleMakeMovementAction({
 				from: { ...selected },
 				to: { row, col, cell },
@@ -50,35 +63,28 @@ const ChessBoard = ({ board, isFlipped, nextPlayer }) => {
 	}
 
 	return (
-		<div className="board-container">
-			<div className="board-header">
-				<FlipBoardButton />
-				<div>
-					selected: {JSON.stringify(selected)}
-				</div>
-			</div>
-			<div className='chess-board'>
-				{boardState.map((row, rowIndex) => {
-					return (
-						<React.Fragment key={rowIndex}>
-							{row.map((cell, colIndex) => {
-								return (
-									<div style={{ padding: 0 }}
-										key={`${rowIndex}-${colIndex}`}>
-										<BoardCell
-											x={rowIndex}
-											y={colIndex}
-											cell={cell}
-											onClick={(selectedCell) => handleClick(selectedCell, rowIndex, colIndex)}
-											type={rowIndex % 2 === colIndex % 2 ? 'pair' : 'odd'}
-										/>
-									</div>
-								)
-							})}
-						</React.Fragment>
-					)
-				})}
-			</div>
+		<div className='chess-board'>
+			{boardState.map((row, rowIndex) => {
+				return (
+					<React.Fragment key={rowIndex}>
+						{row.map((cell, colIndex) => {
+							return (
+								<div style={{ padding: 0 }}
+									key={`${rowIndex}-${colIndex}`}>
+									<BoardCell
+										x={rowIndex}
+										y={colIndex}
+										selected={selected}
+										cell={cell}
+										onClick={(selectedCell) => handleClick(selectedCell, rowIndex, colIndex)}
+										type={rowIndex % 2 === colIndex % 2 ? 'pair' : 'odd'}
+									/>
+								</div>
+							)
+						})}
+					</React.Fragment>
+				)
+			})}
 		</div>
 	)
 }

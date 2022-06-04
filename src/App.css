@@ -1,0 +1,25 @@
+.board-container {
+	display: flex;
+	justify-content: center;
+}
+
+.board-container .board-footer {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	width: 80vh;
+	margin-top: 2rem;
+}
+
+.board-container .board-header {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 80vh;
+}
+
+.board-container .board-content {
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+}

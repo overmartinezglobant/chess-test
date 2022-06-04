@@ -6,6 +6,7 @@ const initialState = {
 	board: BoardState,
 	isFlipped: false,
 	nextPlayer: 'w',
+	isMovementDisabled: false,
 	history: [],
 }
 
@@ -26,6 +27,10 @@ export const boardSlice = createSlice({
 	reducers: {
 		resetBoard: (state) => {
 			state.board = [...BoardState]
+			state.history = []
+		},
+		setBoardState: (state, { payload }) => {
+			state.board = [...payload]
 		},
 		makeMovement: (state, { payload }) => {
 			const { from, to, isFlipped } = payload
@@ -42,17 +47,35 @@ export const boardSlice = createSlice({
 		setFlippedBoard: (state, { payload }) => {
 			state.isFlipped = payload
 		},
-		switchNextPlayer: (state) => {
-			state.nextPlayer = state.nextPlayer === 'w' ? 'b' : 'w'
+		setMovementDisable: (state, { payload }) => {
+			state.isMovementDisabled = payload
+		},
+		switchNextPlayer: (state, { payload }) => {
+			if (!payload) {
+				state.nextPlayer = state.nextPlayer === 'w' ? 'b' : 'w'
+
+				return
+			}
+
+			state.nextPlayer = payload === 'w' ? 'b' : 'w'
+		},
+		addMovementToHistory: (state, { payload }) => {
+			state.history.push({
+				board: [...state.board],
+				...payload,
+			})
 		},
 	},
 })
 
 export const {
 	resetBoard,
+	setBoardState,
 	makeMovement,
 	setFlippedBoard,
 	switchNextPlayer,
+	setMovementDisable,
+	addMovementToHistory,
 } = boardSlice.actions
 
 export default boardSlice.reducer
