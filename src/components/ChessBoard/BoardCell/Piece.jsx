@@ -18,7 +18,7 @@ const Piece = ({ pieceName, onClick = () => null }) => {
 
 	useEffect(() => {
 		if (pieceName) {
-			setPieceImage(`public/assets/images/${pieceName}.png`)
+			setPieceImage(`/images/${pieceName}.png`)
 		} else {
 			setPieceImage('')
 		}
