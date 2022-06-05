@@ -8,6 +8,7 @@ const initialState = {
 	nextPlayer: 'w',
 	isMovementDisabled: false,
 	history: [],
+	currentMove: -1,
 }
 
 const getMatrixFlipped = (state, isFlipped) => {
@@ -27,7 +28,10 @@ export const boardSlice = createSlice({
 	reducers: {
 		resetBoard: (state) => {
 			state.board = [...BoardState]
+		},
+		resetHistory: (state) => {
 			state.history = []
+			state.currentMove = -1
 		},
 		setBoardState: (state, { payload }) => {
 			state.board = [...payload]
@@ -65,6 +69,9 @@ export const boardSlice = createSlice({
 				...payload,
 			})
 		},
+		setCurrentMove: (state, { payload }) => {
+			state.currentMove = payload
+		},
 	},
 })
 
@@ -76,6 +83,8 @@ export const {
 	switchNextPlayer,
 	setMovementDisable,
 	addMovementToHistory,
+	setCurrentMove,
+	resetHistory,
 } = boardSlice.actions
 
 export default boardSlice.reducer

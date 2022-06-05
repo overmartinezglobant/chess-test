@@ -1,13 +1,8 @@
-import {
-	faArrowLeft,
-	faArrowRight,
-	faPlay,
-} from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 import React, { useEffect, useState } from 'react'
 import { connect, useDispatch } from 'react-redux'
-import { Button, Table } from 'semantic-ui-react'
-import { setBoardState, switchNextPlayer } from '../../../redux/reducers/board'
+import { Table } from 'semantic-ui-react'
+import { setBoardState, setCurrentMove, switchNextPlayer } from '../../../redux/reducers/board'
 import './MoveHistory.css'
 
 const chunkArray = (list, size) => {
@@ -28,9 +23,12 @@ const MoveHistory = ({ history, nextPlayer }) => {
 		setMovements(chunkArray(history, 2))
 	}, [history])
 
-	const onSelectHistoryPoint = ({ board, team }) => {
+	const onSelectHistoryPoint = ({ board, team }, row, col) => {
+		const currentPoint = (row * 2) - col
+
 		dispatch(setBoardState(board))
 		dispatch(switchNextPlayer(team))
+		dispatch(setCurrentMove(currentPoint))
 	}
 
 	return (
@@ -53,13 +51,13 @@ const MoveHistory = ({ history, nextPlayer }) => {
 							<Table.Cell>{rowIndex + 1}</Table.Cell>
 							<Table.Cell
 								style={{ cursor: 'pointer' }}
-								onClick={() => onSelectHistoryPoint(row[0])}
+								onClick={() => onSelectHistoryPoint(row[0], (rowIndex + 1), 2)}
 							>
 								{row[0].move}
 							</Table.Cell>
 							<Table.Cell
 								style={{ cursor: 'pointer' }}
-								onClick={() => onSelectHistoryPoint(row[1])}
+								onClick={() => onSelectHistoryPoint(row[1], (rowIndex + 1), 1)}
 							>
 								{row[1]?.move}
 							</Table.Cell>

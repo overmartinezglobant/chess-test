@@ -1,5 +1,5 @@
 import { Card } from 'semantic-ui-react'
-import FlipBoardButton from '../FlipBoardButton/FlipBoardButton'
+import BoardActionControl from '../BoardActionControl/BoardActionControl'
 import MoveHistory from '../MoveHistory/MoveHistory'
 
 const SidePanel = ({ style = {} }) => {
@@ -18,7 +18,7 @@ const SidePanel = ({ style = {} }) => {
 					<MoveHistory />
 				</Card.Content>
 				<Card.Content extra>
-					<FlipBoardButton />
+					<BoardActionControl />
 				</Card.Content>
 			</Card>
 		</div>

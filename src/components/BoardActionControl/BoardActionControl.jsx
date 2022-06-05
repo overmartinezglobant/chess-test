@@ -3,16 +3,15 @@ import {
 	faArrowLeft,
 	faArrowRight,
 	faChessKing as faChessKingSolid,
-	faPlay,
 	faRepeat,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { connect, useDispatch } from 'react-redux'
 import { Button, Divider, Popup } from 'semantic-ui-react'
-import { resetBoard, setFlippedBoard, switchNextPlayer } from '../../../redux/reducers/board'
-import './FlipBoardButton.css'
+import { resetBoard, resetHistory, setBoardState, setCurrentMove, setFlippedBoard, switchNextPlayer } from '../../../redux/reducers/board'
+import './BoardActionControl.css'
 
-const FlipBoardButton = ({ isFlipped }) => {
+const BoardActionControl = ({ isFlipped, currentMove, history }) => {
 	const dispatch = useDispatch()
 
 	const handleClick = (type) => {
@@ -20,23 +19,64 @@ const FlipBoardButton = ({ isFlipped }) => {
 	}
 
 	const handleRestore = () => {
-		console.log('.')
 		dispatch(resetBoard())
+		dispatch(resetHistory())
 		dispatch(switchNextPlayer('b'))
+	}
+
+	const isDisabled = () => {
+		return (currentMove === -1 && !history.length) || currentMove === history.length - 1
+	}
+
+	const moveForward = () => {
+		if (!isDisabled()) {
+			const value = currentMove + 1
+			const { board, team } = history[value]
+
+			dispatch(switchNextPlayer(team))
+			dispatch(setCurrentMove(value))
+			dispatch(setBoardState(board))
+
+			return true
+		}
+
+		console.log('isDisables')
+		return false
+	}
+
+	const moveBackward = () => {
+		if (currentMove !== -1) {
+			if (currentMove === 0) {
+				dispatch(setCurrentMove(-1))
+				dispatch(switchNextPlayer('b'))
+				dispatch(resetBoard())
+
+				return true
+			}
+
+			const value = currentMove - 1
+			const { board, team } = history[value]
+
+			dispatch(switchNextPlayer(team))
+			dispatch(setCurrentMove(value))
+			dispatch(setBoardState(board))
+
+			return true
+		}
+
+		return false
 	}
 
 	const movementButtons = [
 		{
+			disabled: currentMove === -1,
 			icon: faArrowLeft,
-			onClick: () => null,
+			onClick: moveBackward,
 		},
 		{
-			icon: faPlay,
-			onClick: () => null,
-		},
-		{
+			disabled: isDisabled(),
 			icon: faArrowRight,
-			onClick: () => null,
+			onClick: moveForward,
 		},
 		{
 			icon: faRepeat,
@@ -75,8 +115,8 @@ const FlipBoardButton = ({ isFlipped }) => {
 				>
 					{movementButtons.map(({ icon, onClick, ...props }, index) => {
 						return (
-							<Button size="small" key={`mv-action-btn-${index}`} {...props}>
-								<FontAwesomeIcon icon={icon} onClick={onClick} />
+							<Button size="small" key={`mv-action-btn-${index}`} {...props} onClick={onClick}>
+								<FontAwesomeIcon icon={icon} />
 							</Button>
 						)
 					})}
@@ -102,11 +142,11 @@ const FlipBoardButton = ({ isFlipped }) => {
 								trigger={
 									<Button
 										size="small"
+										onClick={onClick}
 										icon={
 											<FontAwesomeIcon
 												icon={icon}
 												size='lg'
-												onClick={onClick}
 											/>
 										}
 										{...props}
@@ -123,7 +163,9 @@ const FlipBoardButton = ({ isFlipped }) => {
 const mapStateToProps = ({ board }) => {
 	return {
 		isFlipped: board.isFlipped,
+		currentMove: board.currentMove,
+		history: board.history,
 	}
 }
 
-export default connect(mapStateToProps)(FlipBoardButton)
+export default connect(mapStateToProps)(BoardActionControl)

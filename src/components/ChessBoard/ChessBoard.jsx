@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { connect, useDispatch } from 'react-redux'
 import BoardCell from './BoardCell/BoardCell'
 import './ChessBoard.css'
-import { addMovementToHistory, makeMovement, switchNextPlayer } from '../../../redux/reducers/board'
+import { addMovementToHistory, makeMovement, setCurrentMove, switchNextPlayer } from '../../../redux/reducers/board'
 
-const ChessBoard = ({ board, isFlipped, nextPlayer }) => {
+const ChessBoard = ({ board, isFlipped, nextPlayer, currentMove }) => {
 	const [boardState, setBoardState] = useState([])
 	const [selected, setSelected] = useState(null)
 	const dispatch = useDispatch()
@@ -37,6 +37,7 @@ const ChessBoard = ({ board, isFlipped, nextPlayer }) => {
 
 		dispatch(makeMovement({ from, to, isFlipped }))
 		dispatch(switchNextPlayer())
+		dispatch(setCurrentMove(currentMove + 1))
 		dispatch(addMovementToHistory({
 			move: movement,
 			team: fromCell.team,
@@ -94,6 +95,7 @@ const mapStateToProps = ({ board }) => {
 		board: board.board,
 		isFlipped: board.isFlipped,
 		nextPlayer: board.nextPlayer,
+		currentMove: board.currentMove,
 	}
 }
 

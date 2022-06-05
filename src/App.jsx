@@ -1,8 +1,6 @@
 import { Card } from 'semantic-ui-react'
-import { ChessBoard } from './components'
-import MoveHistory from './components/MoveHistory/MoveHistory'
+import { ChessBoard, SidePanel } from './components'
 import './App.css'
-import SidePanel from './components/SidePanel/SidePanel'
 
 function App () {
 	return (
